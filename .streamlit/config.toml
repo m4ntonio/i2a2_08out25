@@ -1,3 +1,6 @@
-# .streamlit/secrets.toml
+[server]
+headless = true
+port = 8501
 
-GOOGLE_API_KEY = "AIzaSyBuFtSPdqNWQG-WC_Vt6dCaRaTZjXRaZNw"
+[theme]
+primaryColor = "#FF4B4B"
