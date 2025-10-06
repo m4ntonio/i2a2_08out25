@@ -26,8 +26,8 @@ O **DataAgent EDA** é uma aplicação web construído em Streamlit que utiliza 
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seuusuario/dataagent.git
-   cd dataagent
+   git clone https://github.com/m4ntonio/i2a2_08out25.git
+   cd i2a2_08out25
 
 2. Crie um ambiente virtual e instale as dependências:
     ```bash
@@ -91,3 +91,4 @@ Abra uma issue ou um pull request no GitHub.
 ## 🧑‍💻 Autor
 
 Desenvolvido por m4ntonio – v1.0.9, 2025
+
