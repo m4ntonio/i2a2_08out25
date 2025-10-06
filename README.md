@@ -55,7 +55,7 @@ O **DataAgent EDA** é uma aplicação web construído em Streamlit que utiliza 
 ## 📂 Estrutura do Projeto
 
 ```
-dataagent/               # pasta principal
+i2a2_08out25/            # pasta principal
 ├── app.py               # App principal com Streamlit
 ├── database.py          # Sistema de salvamento com SQLite
 ├── .streamlit/          # pasta API
@@ -90,5 +90,6 @@ Abra uma issue ou um pull request no GitHub.
 
 ## 🧑‍💻 Autor
 
-Desenvolvido por m4ntonio – v1.0.9, 2025
+Desenvolvido por MAO 2025
+
 
