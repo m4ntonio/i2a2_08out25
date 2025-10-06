@@ -1,6 +1,6 @@
 # 🕵️ DataAgent EDA: Agente de Análise de Dados com IA
 
-[![streamlit](https://img.shields.io/badge/OPEN-Streamlit-green)](https://m4ntonio.github.io/) 
+[![streamlit](https://img.shields.io/badge/OPEN-Streamlit-green)](https://i2a2mao08out25.streamlit.app/) 
 [![m4ntonio badge](https://img.shields.io/badge/2025-ꂵ4ꋊ꓄ꄲꋊ꒐ꄲ-blue)](https://m4ntonio.github.io/) 
 [![Licença](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
 
@@ -89,4 +89,5 @@ Contribuições, relatórios de bugs e sugestões são bem-vindos!
 Abra uma issue ou um pull request no GitHub.
 
 ## 🧑‍💻 Autor
+
 Desenvolvido por m4ntonio – v1.0.9, 2025
