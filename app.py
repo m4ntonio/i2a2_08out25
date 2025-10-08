@@ -63,7 +63,7 @@ except Exception as e:
 # --- EXECUÇÃO SEGURA DE CÓDIGO ---
 def execute_safe_code(code, df):
     SAFE_GLOBALS = {
-        "__builtins__": {k: __builtins__[k] for k in ["print", "len", "sum", "min", "max", "abs", "round", "int", "float"] if k in __builtins__},
+        "__builtins__": {k: __builtins__[k] for k in ["print", "len", "sum", "min", "max", "abs", "round", "int", "float", "range", "list", "dict", "tuple", "str", "sorted", "enumerate"] if k in __builtins__},
         "pd": pd,
         "df": df,
         "plt": plt,
@@ -107,16 +107,7 @@ if "file_name" not in st.session_state:
 # SIDEBAR: PAINEL DE INFORMAÇÕES
 # ================================
 st.sidebar.markdown(
-    """
-    <div style='
-        font-size:24px;
-        color:#1abc9c;
-        font-weight:bold;
-        text-shadow: 2px 1.7px 0px rgba(0,0,0,0.6);
-    '>
-        <h2 style='color:#1abc9c; font-size: 30px;'>🕵️ DataAgent</h2>
-    </div>
-    """,
+    "<div style='font-size:24px; color:#1abc9c; font-weight:bold;'>🕵️ DataAgent</div>",
     unsafe_allow_html=True
 )
 
@@ -163,7 +154,7 @@ if st.session_state.get("db_ready"):
         sessions = st.session_state.database.list_all_sessions()
         if len(sessions) > 0:
             if st.sidebar.button("🧹 Limpar Histórico", key="clear_history"):
-                os.remove("mydatabase.db")
+                os.remove("data_agent.db")
                 st.session_state.messages = []
                 st.success("✅ Histórico limpo!")
                 st.rerun()
@@ -230,7 +221,7 @@ if st.session_state.df is not None:
     df = st.session_state.df
     st.subheader("📋 Amostra dos Dados")
     st.dataframe(df.head(5))
-    st.caption(f"🔢 {df.shape[0]} linhas × {df.shape[1]} colunas")
+    st.caption(f"📢 {df.shape[0]} linhas × {df.shape[1]} colunas")
 
     user_question = st.text_input("Pergunte algo sobre os dados:", key="user_input")
 
@@ -242,21 +233,27 @@ if st.session_state.df is not None:
         history = "\n".join([f"{m['role']}: {m['content']}" for m in últimas_mensagens])
 
         prompt = f"""
-        Você é um assistente especialista em análise de dados com Python criado por MAO, mas também pode conversar de forma amigável. O DataFrame 'df' tem colunas: {column_names}.
+        Você é um assistente especialista em análise de dados com Python. O DataFrame 'df' tem colunas: {column_names}.
         RESPONDA SEMPRE EM PORTUGUÊS DO BRASIL.
 
-        REGRAS:
-         1. Não use 'import', 'open(', 'exec(', 'eval('.
+        REGRAS DE CÓDIGO:
+         1. NUNCA use 'import', 'open(', 'exec(', 'eval('.
          2. Use diretamente 'df'.
-         3. As bibliotecas 'pandas', 'matplotlib.pyplot', 'seaborn' já estão importadas e prontas para uso.
+         3. As bibliotecas 'pandas', 'matplotlib.pyplot', 'seaborn' já estão importadas.
          4. Para gráficos, use o eixo 'ax': sns.histplot(data=df, x='col', ax=ax) ou df.plot(ax=ax).
          5. Configure títulos com ax.set_title(), xlabel, ylabel.
-         6. Coloque TODO o código em um único bloco ```python.
-         7. Seja claro e direto. Evite rodeios.
-         8. Se for uma saudação (olá, oi, bom dia, boa tarde, etc.), responda de forma calorosa e amigável
-         9. Se for uma pergunta geral, responda brevemente mas sempre mencione seu propósito principal
-        10. Se for sobre análise de dados mas sem arquivo carregado, explique que ele precisa fazer upload primeiro
-        11. Se não souber responder, diga que não é possível.
+         6. Coloque TODO o código em um ÚNICO bloco ```python.
+         7. Para formatar números, use .round(2) nos DataFrames ou f-strings com :.2f nos prints.
+         8. SEMPRE formate valores monetários e percentuais com 2 casas decimais.
+         9. Use separadores de milhares quando apropriado em f-strings.
+
+        REGRAS DE RESPOSTA:
+        10. NÃO se apresente ou diga quem você é, a menos que seja explicitamente perguntado.
+        11. NÃO repita ou descreva o código que você gerar - apenas forneça uma breve explicação do que será feito.
+        12. Seja direto e conciso. Evite rodeios.
+        13. Para saudações, responda de forma amigável e breve.
+        14. Se não houver dados carregados ou não souber responder, explique de forma clara.
+        15. Use 'R$' (com espaço) para valores monetários. Exemplo: R$ 197.26
 
         Histórico:
         {history}
@@ -283,16 +280,21 @@ if st.session_state.df is not None:
                 )
 
             with st.chat_message("assistant"):
-                st.markdown(answer)
+                # Remove o bloco de código da resposta para não duplicar
+                answer_clean = re.sub(r"```python.*?```", "", answer, flags=re.DOTALL).strip()
+                st.markdown(answer_clean)
+                
                 code_match = re.search(r"```python\n(.*?)```", answer, re.DOTALL)
                 if code_match:
                     code = code_match.group(1).strip()
                     with st.expander("Ver código"):
                         st.code(code, language="python")
                     fig, text_result = execute_safe_code(code, df)
-                    st.subheader("Resultado:")
+                    if text_result or fig:
+                        st.subheader("Resultado:")
                     if text_result:
-                        st.text(text_result)
+                        # Exibe o resultado em um container estilizado
+                        st.code(text_result, language=None)
                     if fig:
                         st.pyplot(fig)
                         buf = io.BytesIO()
